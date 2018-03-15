@@ -1,0 +1,10 @@
+disabled_rules: # rule identifiers to exclude from running
+  - cyclomatic_complexity
+  - function_body_length
+  - syntactic_sugar
+  - force_cast
+  - line_length
+included:
+  - Package.swift
+  - Sources
+  - Tests

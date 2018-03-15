@@ -1,0 +1,39 @@
+os:
+  - linux
+  - osx
+language: generic
+sudo: required
+dist: trusty
+osx_image: xcode9.2
+
+before_install:
+  - if [ $TRAVIS_OS_NAME == "linux" ]; then
+      eval "$(curl -sL https://swiftenv.fuller.li/install.sh)";
+    elif [ $TRAVIS_OS_NAME == "osx" ]; then
+      rvm use 2.4.2 --install --binary --fuzzy;
+      ruby --version;
+      gem install bundler;
+      bundle --version;
+      brew update;
+      brew outdated swiftlint || brew upgrade swiftlint;
+    fi
+
+install:
+  - if [ $TRAVIS_OS_NAME == "osx" ]; then
+      bundle install --jobs=3 --retry=3 --deployment;
+    fi
+
+script:
+  - swift --version
+  - swift build
+  - swift build -c release
+  - swift test
+  - if [ $TRAVIS_OS_NAME == "osx" ]; then
+      swiftlint;
+      bundle exec pod lib lint;
+    fi
+
+notifications:
+  email:
+    on_success: never
+    on_failure: change
