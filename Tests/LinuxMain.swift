@@ -12,7 +12,8 @@ import XCTest
 @testable import AnyCodableTests
 
 XCTMain([
-    testCase(AnyCodableTests.allTests)
+    testCase(AnyCodableTests.allTests),
+    testCase(KeyedContainerProtocolEvaluatingNilTests.allTests)
 ])
 
 #endif

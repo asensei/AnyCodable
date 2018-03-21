@@ -21,6 +21,30 @@ public struct AnyCodable {
     public let value: Any?
 }
 
+public extension AnyCodable {
+
+    public func assertValue<T>(_ type: T.Type) throws -> T {
+
+        switch type {
+        case is NSNull.Type where self.value == nil:
+            return NSNull() as! T
+        default:
+            guard let value = self.value as? T else {
+                throw Error.typeMismatch(Swift.type(of: self.value))
+            }
+
+            return value
+        }
+    }
+}
+
+public extension AnyCodable {
+
+    public enum Error: Swift.Error {
+        case typeMismatch(Any.Type)
+    }
+}
+
 extension AnyCodable: Codable {
 
     public init(from decoder: Decoder) throws {
