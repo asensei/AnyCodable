@@ -133,7 +133,7 @@ private struct _AnyEncodingStorage {
     // MARK: Properties
 
     /// The container stack.
-    private(set) fileprivate var containers: [Any] = []
+    private(set) fileprivate var containers: [NSObject] = []
 
     // MARK: - Initialization
 
@@ -158,11 +158,11 @@ private struct _AnyEncodingStorage {
         return array
     }
 
-    fileprivate mutating func push(container: Any) {
+    fileprivate mutating func push(container: NSObject) {
         self.containers.append(container)
     }
 
-    fileprivate mutating func popContainer() -> Any {
+    fileprivate mutating func popContainer() -> NSObject {
         precondition(!self.containers.isEmpty, "Empty container stack.")
         return self.containers.popLast()!
     }
@@ -202,68 +202,68 @@ private struct _AnyKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContainerP
     // MARK: - KeyedEncodingContainerProtocol Methods
 
     public mutating func encodeNil(forKey key: Key) throws {
-        self.container[key.stringValue] = NSNull()
+        self.container[NSString(string: key.stringValue)] = NSNull()
     }
     public mutating func encode(_ value: Bool, forKey key: Key) throws {
-        self.container[key.stringValue] = self.encoder.box(value)
+        self.container[NSString(string: key.stringValue)] = self.encoder.box(value)
     }
     public mutating func encode(_ value: Int, forKey key: Key) throws {
-        self.container[key.stringValue] = self.encoder.box(value)
+        self.container[NSString(string: key.stringValue)] = self.encoder.box(value)
     }
     public mutating func encode(_ value: Int8, forKey key: Key) throws {
-        self.container[key.stringValue] = self.encoder.box(value)
+        self.container[NSString(string: key.stringValue)] = self.encoder.box(value)
     }
     public mutating func encode(_ value: Int16, forKey key: Key) throws {
-        self.container[key.stringValue] = self.encoder.box(value)
+        self.container[NSString(string: key.stringValue)] = self.encoder.box(value)
     }
     public mutating func encode(_ value: Int32, forKey key: Key) throws {
-        self.container[key.stringValue] = self.encoder.box(value)
+        self.container[NSString(string: key.stringValue)] = self.encoder.box(value)
     }
     public mutating func encode(_ value: Int64, forKey key: Key) throws {
-        self.container[key.stringValue] = self.encoder.box(value)
+        self.container[NSString(string: key.stringValue)] = self.encoder.box(value)
     }
     public mutating func encode(_ value: UInt, forKey key: Key) throws {
-        self.container[key.stringValue] = self.encoder.box(value)
+        self.container[NSString(string: key.stringValue)] = self.encoder.box(value)
     }
     public mutating func encode(_ value: UInt8, forKey key: Key) throws {
-        self.container[key.stringValue] = self.encoder.box(value)
+        self.container[NSString(string: key.stringValue)] = self.encoder.box(value)
     }
     public mutating func encode(_ value: UInt16, forKey key: Key) throws {
-        self.container[key.stringValue] = self.encoder.box(value)
+        self.container[NSString(string: key.stringValue)] = self.encoder.box(value)
     }
     public mutating func encode(_ value: UInt32, forKey key: Key) throws {
-        self.container[key.stringValue] = self.encoder.box(value)
+        self.container[NSString(string: key.stringValue)] = self.encoder.box(value)
     }
     public mutating func encode(_ value: UInt64, forKey key: Key) throws {
-        self.container[key.stringValue] = self.encoder.box(value)
+        self.container[NSString(string: key.stringValue)] = self.encoder.box(value)
     }
     public mutating func encode(_ value: String, forKey key: Key) throws {
-        self.container[key.stringValue] = self.encoder.box(value)
+        self.container[NSString(string: key.stringValue)] = self.encoder.box(value)
     }
 
     public mutating func encode(_ value: Float, forKey key: Key) throws {
         // Since the float may be invalid and throw, the coding path needs to contain this key.
         self.encoder.codingPath.append(key)
         defer { self.encoder.codingPath.removeLast() }
-        self.container[key.stringValue] = self.encoder.box(value)
+        self.container[NSString(string: key.stringValue)] = self.encoder.box(value)
     }
 
     public mutating func encode(_ value: Double, forKey key: Key) throws {
         // Since the double may be invalid and throw, the coding path needs to contain this key.
         self.encoder.codingPath.append(key)
         defer { self.encoder.codingPath.removeLast() }
-        self.container[key.stringValue] = self.encoder.box(value)
+        self.container[NSString(string: key.stringValue)] = self.encoder.box(value)
     }
 
     public mutating func encode<T: Encodable>(_ value: T, forKey key: Key) throws {
         self.encoder.codingPath.append(key)
         defer { self.encoder.codingPath.removeLast() }
-        self.container[key.stringValue] = try self.encoder.box(value)
+        self.container[NSString(string: key.stringValue)] = try self.encoder.box(value)
     }
 
     public mutating func nestedContainer<NestedKey>(keyedBy keyType: NestedKey.Type, forKey key: Key) -> KeyedEncodingContainer<NestedKey> {
         let dictionary = NSMutableDictionary()
-        self.container[key.stringValue] = dictionary
+        self.container[NSString(string: key.stringValue)] = dictionary
 
         self.codingPath.append(key)
         defer { self.codingPath.removeLast() }
@@ -274,7 +274,7 @@ private struct _AnyKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContainerP
 
     public mutating func nestedUnkeyedContainer(forKey key: Key) -> UnkeyedEncodingContainer {
         let array = NSMutableArray()
-        self.container[key.stringValue] = array
+        self.container[NSString(string: key.stringValue)] = array
 
         self.codingPath.append(key)
         defer { self.codingPath.removeLast() }
@@ -457,29 +457,29 @@ extension _AnyEncoder: SingleValueEncodingContainer {
 
 extension _AnyEncoder {
     /// Returns the given value boxed in a container appropriate for pushing onto the container stack.
-    fileprivate func box(_ value: Bool)   -> Any { return value }
-    fileprivate func box(_ value: Int)    -> Any { return NSNumber(value: value) }
-    fileprivate func box(_ value: Int8)   -> Any { return NSNumber(value: value) }
-    fileprivate func box(_ value: Int16)  -> Any { return NSNumber(value: value) }
-    fileprivate func box(_ value: Int32)  -> Any { return NSNumber(value: value) }
-    fileprivate func box(_ value: Int64)  -> Any { return NSNumber(value: value) }
-    fileprivate func box(_ value: UInt)   -> Any { return NSNumber(value: value) }
-    fileprivate func box(_ value: UInt8)  -> Any { return NSNumber(value: value) }
-    fileprivate func box(_ value: UInt16) -> Any { return NSNumber(value: value) }
-    fileprivate func box(_ value: UInt32) -> Any { return NSNumber(value: value) }
-    fileprivate func box(_ value: UInt64) -> Any { return NSNumber(value: value) }
-    fileprivate func box(_ value: String) -> Any { return value }
-    fileprivate func box(_ value: Float)  -> Any { return NSNumber(value: value) }
-    fileprivate func box(_ value: Double) -> Any { return NSNumber(value: value) }
-    fileprivate func box(_ value: Date)   -> Any { return value }
-    fileprivate func box(_ value: Data)   -> Any { return value }
+    fileprivate func box(_ value: Bool)   -> NSObject { return NSNumber(value: value) }
+    fileprivate func box(_ value: Int)    -> NSObject { return NSNumber(value: value) }
+    fileprivate func box(_ value: Int8)   -> NSObject { return NSNumber(value: value) }
+    fileprivate func box(_ value: Int16)  -> NSObject { return NSNumber(value: value) }
+    fileprivate func box(_ value: Int32)  -> NSObject { return NSNumber(value: value) }
+    fileprivate func box(_ value: Int64)  -> NSObject { return NSNumber(value: value) }
+    fileprivate func box(_ value: UInt)   -> NSObject { return NSNumber(value: value) }
+    fileprivate func box(_ value: UInt8)  -> NSObject { return NSNumber(value: value) }
+    fileprivate func box(_ value: UInt16) -> NSObject { return NSNumber(value: value) }
+    fileprivate func box(_ value: UInt32) -> NSObject { return NSNumber(value: value) }
+    fileprivate func box(_ value: UInt64) -> NSObject { return NSNumber(value: value) }
+    fileprivate func box(_ value: String) -> NSObject { return NSString(string: value) }
+    fileprivate func box(_ value: Float)  -> NSObject { return NSNumber(value: value) }
+    fileprivate func box(_ value: Double) -> NSObject { return NSNumber(value: value) }
+    fileprivate func box(_ value: Date)   -> NSObject { return NSDate(timeIntervalSince1970: value.timeIntervalSince1970) }
+    fileprivate func box(_ value: Data)   -> NSObject { return NSData(data: value) }
 
-    fileprivate func box<T: Encodable>(_ value: T) throws -> Any {
+    fileprivate func box<T: Encodable>(_ value: T) throws -> NSObject {
         return try self.box_(value) ?? NSDictionary()
     }
 
     // This method is called "box_" instead of "box" to disambiguate it from the overloads. Because the return type here is different from all of the "box" overloads (and is more general), any "box" calls in here would call back into "box" recursively instead of calling the appropriate overload, which is not what we want.
-    fileprivate func box_<T: Encodable>(_ value: T) throws -> Any? {
+    fileprivate func box_<T: Encodable>(_ value: T) throws -> NSObject? {
         if T.self == Date.self || T.self == NSDate.self {
             // Respect Date encoding strategy
             return self.box((value as! Date))
@@ -672,7 +672,7 @@ private class _AnyDecoder: Decoder {
                                                                     debugDescription: "Cannot get keyed decoding container -- found null value instead."))
         }
 
-        guard let topContainer = self.storage.topContainer as? [String: Any] else {
+        guard let topContainer = self.storage.topContainer as? [AnyHashable: Any] else {
             throw DecodingError.typeMismatch([String: Any].self,
                                              DecodingError.Context(codingPath: self.codingPath,
                                                                    debugDescription: "Cannot get keyed decoding container -- found \(Swift.type(of: self.storage.topContainer)) instead."))
@@ -709,7 +709,6 @@ private struct _AnyDecodingStorage {
     // MARK: Properties
 
     /// The container stack.
-    /// Elements may be any one of the Any types (NSNull, NSNumber, String, Array, [String: Any]).
     private(set) fileprivate var containers: [Any] = []
 
     // MARK: - Initialization
@@ -749,7 +748,7 @@ private struct _AnyKeyedDecodingContainer<K: CodingKey>: KeyedDecodingContainerP
     private let decoder: _AnyDecoder
 
     /// A reference to the container we're reading from.
-    private let container: [String: Any]
+    private let container: [AnyHashable: Any]
 
     /// The path of coding keys taken to get to this point in decoding.
     private(set) public var codingPath: [CodingKey]
@@ -757,7 +756,7 @@ private struct _AnyKeyedDecodingContainer<K: CodingKey>: KeyedDecodingContainerP
     // MARK: - Initialization
 
     /// Initializes `self` by referencing the given decoder and container.
-    fileprivate init(referencing decoder: _AnyDecoder, wrapping container: [String: Any]) {
+    fileprivate init(referencing decoder: _AnyDecoder, wrapping container: [AnyHashable: Any]) {
         self.decoder = decoder
         self.container = container
         self.codingPath = decoder.codingPath
@@ -766,7 +765,17 @@ private struct _AnyKeyedDecodingContainer<K: CodingKey>: KeyedDecodingContainerP
     // MARK: - KeyedDecodingContainerProtocol Methods
 
     public var allKeys: [Key] {
-        return self.container.keys.flatMap { Key(stringValue: $0) }
+
+        return self.container.keys.flatMap {
+            switch $0.base {
+            case let value as String:
+                return Key(stringValue: value)
+            case let value as Int:
+                return Key(intValue: value)
+            default:
+                return nil
+            }
+        }
     }
 
     public func contains(_ key: Key) -> Bool {
@@ -1020,8 +1029,8 @@ private struct _AnyKeyedDecodingContainer<K: CodingKey>: KeyedDecodingContainerP
                                                                   debugDescription: "Cannot get \(KeyedDecodingContainer<NestedKey>.self) -- no value found for key \(_errorDescription(of: key))"))
         }
 
-        guard let dictionary = value as? [String: Any] else {
-            throw DecodingError.typeMismatch([String: Any].self,
+        guard let dictionary = value as? [AnyHashable: Any] else {
+            throw DecodingError.typeMismatch([AnyHashable: Any].self,
                                              DecodingError.Context(codingPath: self.codingPath,
                                                                    debugDescription: "Cannot get \(KeyedDecodingContainer<NestedKey>.self) -- found \(Swift.type(of: value)) instead."))
         }
@@ -1371,10 +1380,10 @@ private struct _AnyUnkeyedDecodingContainer: UnkeyedDecodingContainer {
                                                                     debugDescription: "Cannot get keyed decoding container -- found null value instead."))
         }
 
-        guard let dictionary = value as? [String: Any] else {
-            throw DecodingError.typeMismatch([String: Any].self,
+        guard let dictionary = value as? [AnyHashable: Any] else {
+            throw DecodingError.typeMismatch([AnyHashable: Any].self,
                                              DecodingError.Context(codingPath: self.codingPath,
-                                                                   debugDescription: "Cannot get \([String: Any].self) -- found \(Swift.type(of: value)) instead."))
+                                                                   debugDescription: "Cannot get \([AnyHashable: Any].self) -- found \(Swift.type(of: value)) instead."))
         }
 
         self.currentIndex += 1
@@ -1389,14 +1398,14 @@ private struct _AnyUnkeyedDecodingContainer: UnkeyedDecodingContainer {
         guard !self.isAtEnd else {
             throw DecodingError.valueNotFound(UnkeyedDecodingContainer.self,
                                               DecodingError.Context(codingPath: self.codingPath,
-                                                                    debugDescription: "Cannot get nested keyed container -- unkeyed container is at end."))
+                                                                    debugDescription: "Cannot get nested unkeyed container -- unkeyed container is at end."))
         }
 
         let value = self.container[self.currentIndex]
         guard !(value is NSNull) else {
             throw DecodingError.valueNotFound(UnkeyedDecodingContainer.self,
                                               DecodingError.Context(codingPath: self.codingPath,
-                                                                    debugDescription: "Cannot get keyed decoding container -- found null value instead."))
+                                                                    debugDescription: "Cannot get unkeyed decoding container -- found null value instead."))
         }
 
         guard let array = value as? NSMutableArray else {
