@@ -14,6 +14,7 @@ import XCTest
 XCTMain([
     testCase(AnyCodableTests.allTests),
     testCase(AnyEncoderTests.allTests),
+    testCase(DecodableAnyTests.allTests),
     testCase(KeyedContainerProtocolEvaluatingNilTests.allTests),
     testCase(KeyedEncodingContainerProtocolAnyCodableTests.allTests)
 ])
