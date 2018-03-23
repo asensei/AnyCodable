@@ -586,7 +586,7 @@ private class _AnyReferencingEncoder: _AnyEncoder {
             array.insert(value, at: index)
 
         case .dictionary(let dictionary, let key):
-            dictionary[key] = value
+            dictionary[NSString(string: key)] = value
         }
     }
 }
