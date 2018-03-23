@@ -29,13 +29,34 @@ class AnyEncoderTests: XCTestCase {
 
         let encodedValue = try AnyEncoder().encode(value)
 
-        print(encodedValue)
+        let decodedValue = try AnyDecoder().decode(MockCodable.self, from: encodedValue)
+
+        XCTAssertEqual(decodedValue.string, "test")
+        XCTAssertEqual(decodedValue.int, -4)
+        XCTAssertEqual(decodedValue.int8, -5)
+        XCTAssertEqual(decodedValue.int16, -6)
+        XCTAssertEqual(decodedValue.int32, -7)
+        XCTAssertEqual(decodedValue.int64, -8)
+        XCTAssertEqual(decodedValue.uint, 4)
+        XCTAssertEqual(decodedValue.uint8, 5)
+        XCTAssertEqual(decodedValue.uint16, 6)
+        XCTAssertEqual(decodedValue.uint32, 7)
+        XCTAssertEqual(decodedValue.uint64, 8)
+        XCTAssertEqual(decodedValue.float, 5.0)
+        XCTAssertEqual(decodedValue.double, 6.0)
+        XCTAssertTrue(decodedValue.bool)
+        XCTAssertNotNil(decodedValue.array)
+        XCTAssertEqual(decodedValue.array?.count, 2)
+        XCTAssertNotNil(decodedValue.dictionary)
+        XCTAssertEqual(decodedValue.dictionary?.count, 2)
+        XCTAssertNotNil(decodedValue.dictionary?["key"])
+        XCTAssertNotNil(decodedValue.dictionary?["anotherKey"])
     }
 }
 
 extension AnyEncoderTests {
 
-    struct MockCodable: Encodable {
+    struct MockCodable: Codable {
 
         let string: String = "test"
 
