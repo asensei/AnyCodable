@@ -3,7 +3,11 @@ disabled_rules: # rule identifiers to exclude from running
   - function_body_length
   - syntactic_sugar
   - force_cast
+  - file_length
   - line_length
+  - type_name
+  - nesting
+  - type_body_length
 included:
   - Package.swift
   - Sources

@@ -10,7 +10,7 @@ import XCTest
 @testable import AnyCodable
 
 class KeyedEncodingContainerProtocolAnyCodableTests: XCTestCase {
-    
+
     static let allTests = [
         ("testEncodingEmptyAnyCodable", testEncodingEmptyAnyCodable),
         ("testEncodingNSNullAnyCodable", testEncodingNSNullAnyCodable),
