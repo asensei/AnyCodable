@@ -18,7 +18,7 @@ class AnyEncoderTests: XCTestCase {
 
         let value = MockCodable(
             array: [
-                MockCodable(array: nil, dictionary: nil),
+                MockCodable(array: [MockCodable(array: nil, dictionary: nil)], dictionary: ["key": MockCodable(array: nil, dictionary: nil)]),
                 MockCodable(array: nil, dictionary: nil)
             ],
             dictionary: [
@@ -47,6 +47,8 @@ class AnyEncoderTests: XCTestCase {
         XCTAssertTrue(decodedValue.bool)
         XCTAssertNotNil(decodedValue.array)
         XCTAssertEqual(decodedValue.array?.count, 2)
+        XCTAssertEqual(decodedValue.array?.first?.array?.count, 1)
+        XCTAssertEqual(decodedValue.array?.first?.dictionary?.count, 1)
         XCTAssertNotNil(decodedValue.dictionary)
         XCTAssertEqual(decodedValue.dictionary?.count, 2)
         XCTAssertNotNil(decodedValue.dictionary?["key"])
