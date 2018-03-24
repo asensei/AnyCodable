@@ -692,8 +692,8 @@ private class _AnyDecoder: Decoder {
                                                                     debugDescription: "Cannot get unkeyed decoding container -- found null value instead."))
         }
 
-        guard let topContainer = self.storage.topContainer as? NSMutableArray else {
-            throw DecodingError.typeMismatch(NSMutableArray.self,
+        guard let topContainer = self.storage.topContainer as? [Any] else {
+            throw DecodingError.typeMismatch([Any].self,
                                              DecodingError.Context(codingPath: self.codingPath,
                                                                    debugDescription: "Cannot get unkeyed decoding container -- found \(Swift.type(of: self.storage.topContainer)) instead."))
         }
@@ -1052,8 +1052,8 @@ private struct _AnyKeyedDecodingContainer<K: CodingKey>: KeyedDecodingContainerP
                                                                   debugDescription: "Cannot get UnkeyedDecodingContainer -- no value found for key \(_errorDescription(of: key))"))
         }
 
-        guard let array = value as? NSMutableArray else {
-            throw DecodingError.typeMismatch(NSMutableArray.self,
+        guard let array = value as? [Any] else {
+            throw DecodingError.typeMismatch([Any].self,
                                              DecodingError.Context(codingPath: self.codingPath,
                                                                    debugDescription: "Cannot get UnkeyedDecodingContainer -- found \(Swift.type(of: value)) instead."))
         }
@@ -1085,7 +1085,7 @@ private struct _AnyUnkeyedDecodingContainer: UnkeyedDecodingContainer {
     private let decoder: _AnyDecoder
 
     /// A reference to the container we're reading from.
-    private let container: NSMutableArray
+    private let container: [Any]
 
     /// The path of coding keys taken to get to this point in decoding.
     private(set) public var codingPath: [CodingKey]
@@ -1096,7 +1096,7 @@ private struct _AnyUnkeyedDecodingContainer: UnkeyedDecodingContainer {
     // MARK: - Initialization
 
     /// Initializes `self` by referencing the given decoder and container.
-    fileprivate init(referencing decoder: _AnyDecoder, wrapping container: NSMutableArray) {
+    fileprivate init(referencing decoder: _AnyDecoder, wrapping container: [Any]) {
         self.decoder = decoder
         self.container = container
         self.codingPath = decoder.codingPath
@@ -1411,10 +1411,10 @@ private struct _AnyUnkeyedDecodingContainer: UnkeyedDecodingContainer {
                                                                     debugDescription: "Cannot get unkeyed decoding container -- found null value instead."))
         }
 
-        guard let array = value as? NSMutableArray else {
-            throw DecodingError.typeMismatch(NSMutableArray.self,
+        guard let array = value as? [Any] else {
+            throw DecodingError.typeMismatch([Any].self,
                                              DecodingError.Context(codingPath: self.codingPath,
-                                                                   debugDescription: "Cannot get \(NSMutableArray.self) -- found \(Swift.type(of: value)) instead."))
+                                                                   debugDescription: "Cannot get \([Any].self) -- found \(Swift.type(of: value)) instead."))
         }
 
         self.currentIndex += 1
@@ -1892,10 +1892,33 @@ private class Box<T> {
     func unbox() -> Any {
 
         switch self.value {
-        case let value as [Box<Any>]:
-            return value.map { $0.unbox() }
-        case let value as [AnyHashable: Box<Any>]:
-            return value.mapValues { $0.unbox() }
+        case let value as [Any]:
+
+            return value.map { value -> Any in
+                switch value {
+                case let value as Box<[Any]>:
+                    return value.unbox()
+                case let value as Box<[AnyHashable: Any]>:
+                    return value.unbox()
+                default:
+                    return value
+                }
+            }
+
+        case let value as [AnyHashable: Any]:
+
+            return value.mapValues { value -> Any in
+
+                switch value {
+                case let value as Box<[Any]>:
+                    return value.unbox()
+                case let value as Box<[AnyHashable: Any]>:
+                    return value.unbox()
+                default:
+                    return value
+                }
+            }
+
         default:
             return self.value
         }
