@@ -126,6 +126,12 @@ extension AnyCodable: Codable {
             try container.encodeNil()
         case let value as NSNumber:
             try container.encode(value.doubleValue)
+        case let value as Date:
+            try container.encode(value)
+        case let value as URL:
+            try container.encode(value)
+        case let value as Encodable:
+            try value.encode(to: encoder)
         default:
             throw EncodingError.invalidValue(
                 value,

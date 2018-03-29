@@ -52,16 +52,18 @@ class AnyCodableTests: XCTestCase {
         XCTAssertTrue(dataString.contains("\"double-rounded\":2"))
         XCTAssertTrue(dataString.contains("\"string\":\"test\""))
         XCTAssertTrue(dataString.contains("\"nil\":null"))
+        XCTAssertTrue(dataString.contains("\"date\":-978307180"))
+        XCTAssertTrue(dataString.contains("\"url\":\"http:\\/\\/localhost\""))
     }
 
     func testDecodable() throws {
 
-        let data = try JSONSerialization.data(withJSONObject: AnyCodableTests.mockDataStructure)
+        let data = try JSONEncoder().encode(AnyCodable(AnyCodableTests.mockDataStructure))
 
         let anyCodable = try JSONDecoder().decode(AnyCodable.self, from: data)
         let any = anyCodable.value as! [String: Any?]
 
-        XCTAssertEqual(any["dictionary"] as! [String: String], ["key": "value"])
+        XCTAssertEqual((any["dictionary"] as! [String: Any])["key"] as? String, "value")
         XCTAssertEqual((any["optionalDictionary"] as! [String: Any?])["key"] as? String, "value")
         XCTAssertNil((any["optionalDictionary"] as! [String: Any?])["nil"]!)
         XCTAssertEqual(any["array"] as! [String], ["a", "b", "c"])
@@ -85,6 +87,12 @@ class AnyCodableTests: XCTestCase {
         XCTAssertEqual(any["double-rounded"] as! Int, Int(2))
         XCTAssertEqual(any["string"] as! String, "test")
         XCTAssertNil(any["nil"]!)
+        XCTAssertEqual(any["decimal"] as! Double, Double(1.23), accuracy: 0.001)
+        XCTAssertEqual(any["decimalNumber"] as! Double, Double(1.23), accuracy: 0.001)
+        XCTAssertTrue(any["number-bool"] as! Bool)
+        XCTAssertEqual(any["number-int"] as! Int, Int(2))
+        XCTAssertEqual(any["date"] as! Int, -978307180)
+        XCTAssertEqual(any["url"] as! String, "http://localhost")
     }
 }
 
@@ -114,6 +122,8 @@ extension AnyCodableTests {
         "decimal": Decimal(1.23),
         "decimalNumber": NSDecimalNumber(decimal: 1.23),
         "number-bool": NSNumber(value: 1),
-        "number-int": NSNumber(value: 2)
+        "number-int": NSNumber(value: 2),
+        "date": Date(timeIntervalSince1970: 20.0),
+        "url": URL(string: "http://localhost")!
     ]
 }

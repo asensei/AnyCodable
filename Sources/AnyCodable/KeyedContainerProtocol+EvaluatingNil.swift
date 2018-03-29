@@ -19,13 +19,14 @@ public extension KeyedDecodingContainerProtocol {
      */
     public func decodeIfPresentEvaluatingNil<T>(_ type: T.Type, forKey key: Self.Key) throws -> T?? where T: Decodable {
 
-        switch try? self.decodeNil(forKey: key) {
-        case .some(true):
-            return .some(nil)
-        case .some(false):
-            return try self.decodeIfPresent(T.self, forKey: key)
-        case .none:
+        guard self.contains(key) else {
             return nil
+        }
+
+        if try self.decodeNil(forKey: key) {
+            return .some(nil)
+        } else {
+            return try self.decode(T.self, forKey: key)
         }
     }
 }
