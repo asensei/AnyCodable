@@ -1,3 +1,7 @@
+This repository is no longer maintained. It was meant as an experiment to explore if it was possible to make Codable works with undefined data structures.
+
+We came to the conclusion that there are too many edge cases, and we have since then completely moved away from fuzzy decoding of Any types.
+
 # AnyCodable
 
 ![Swift](https://img.shields.io/badge/swift-4.0.3-brightgreen.svg)
